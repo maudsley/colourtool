@@ -1,8 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "colourslider.h"
-#include "rgbcoloursampler.h"
-#include <QVBoxLayout>
+#include "colourwheel.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -10,32 +8,15 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    setContentsMargins(0, 0, 0, 0);
+    setWindowTitle("ColourTool");
 
-    QVBoxLayout* widgetLayout = new QVBoxLayout(ui->widget);
-    widgetLayout->setContentsMargins(0, 0, 0, 0);
-    widgetLayout->setSpacing(0);
+    baseColourWidget_ = new BaseColourWidget();
+    connect(baseColourWidget_, &BaseColourWidget::baseColourChanged, this, &MainWindow::handleBaseColourChanged);
 
-    colourRectangle_ = new ColourRectangleWidget();
-    widgetLayout->addWidget(colourRectangle_);
+    addDockWidget(Qt::LeftDockWidgetArea, baseColourWidget_);
 
-    widgetLayout->addSpacing(10);
-
-    redSlider_ = new ColourSlider();
-    connect(redSlider_, &ColourSlider::indicatorMoved, this, &MainWindow::handleRedSliderChanged);
-    widgetLayout->addWidget(redSlider_);
-
-    greenSlider_ = new ColourSlider();
-    connect(greenSlider_, &ColourSlider::indicatorMoved, this, &MainWindow::handleGreenSliderChanged);
-    widgetLayout->addWidget(greenSlider_);
-
-    blueSlider_ = new ColourSlider();
-    connect(blueSlider_, &ColourSlider::indicatorMoved, this, &MainWindow::handleBlueSliderChanged);
-    widgetLayout->addWidget(blueSlider_);
-
-    widgetLayout->addStretch();
-
-    setSliderColours(Qt::black);
+    colourWheel_ = new ColourWheel(ui->widget);
+    connect(colourWheel_, &ColourWheel::wheelColourChanged, this, &MainWindow::handleWheelColourChanged);
 }
 
 MainWindow::~MainWindow()
@@ -43,43 +24,16 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::setSliderColours(const QColor& colour)
+void MainWindow::handleBaseColourChanged()
 {
-    colourRectangle_->setColour(colour);
+    QColor colour = baseColourWidget_->baseColour();
 
-    std::shared_ptr<RgbColourSampler> redSampler = std::make_shared<RgbColourSampler>();
-    redSampler->setChannel(RgbColourSampler::ChannelRed);
-    redSampler->setColour(colour);
-    redSlider_->setColourSamplerDelegate(redSampler);
-
-    std::shared_ptr<RgbColourSampler> greenSampler = std::make_shared<RgbColourSampler>();
-    greenSampler->setChannel(RgbColourSampler::ChannelGreen);
-    greenSampler->setColour(colour);
-    greenSlider_->setColourSamplerDelegate(greenSampler);
-
-    std::shared_ptr<RgbColourSampler> blueSampler = std::make_shared<RgbColourSampler>();
-    blueSampler->setChannel(RgbColourSampler::ChannelBlue);
-    blueSampler->setColour(colour);
-    blueSlider_->setColourSamplerDelegate(blueSampler);
+    colourWheel_->setIndicatorColour(colour);
 }
 
-void MainWindow::handleRedSliderChanged()
+void MainWindow::handleWheelColourChanged()
 {
-    QColor updatedColour = redSlider_->sliderColour();
+    QColor colour = colourWheel_->indicatorColour();
 
-    setSliderColours(updatedColour);
-}
-
-void MainWindow::handleGreenSliderChanged()
-{
-    QColor updatedColour = greenSlider_->sliderColour();
-
-    setSliderColours(updatedColour);
-}
-
-void MainWindow::handleBlueSliderChanged()
-{
-    QColor updatedColour = blueSlider_->sliderColour();
-
-    setSliderColours(updatedColour);
+    baseColourWidget_->setSliderColours(colour);
 }

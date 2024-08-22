@@ -15,6 +15,7 @@ SOURCES += \
     colourslider.cpp \
     coloursliderbar.cpp \
     coloursliderindicator.cpp \
+    colourwheel.cpp \
     main.cpp \
     mainwindow.cpp \
     rgbcoloursampler.cpp
@@ -26,6 +27,7 @@ HEADERS += \
     colourslider.h \
     coloursliderbar.h \
     coloursliderindicator.h \
+    colourwheel.h \
     mainwindow.h \
     rgbcoloursampler.h
 

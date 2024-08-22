@@ -2,8 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "colourslider.h"
-#include "colourrectanglewidget.h"
+#include "basecolourwidget.h"
+#include "colourwheel.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,20 +17,17 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void setSliderColours(const QColor& colour);
+    void handleBaseColourChanged();
 
-    void handleRedSliderChanged();
-    void handleGreenSliderChanged();
-    void handleBlueSliderChanged();
+    void handleWheelColourChanged();
 
 private:
 
     Ui::MainWindow *ui;
 
-    ColourRectangleWidget* colourRectangle_;
-    ColourSlider* redSlider_;
-    ColourSlider* greenSlider_;
-    ColourSlider* blueSlider_;
+    BaseColourWidget* baseColourWidget_;
+    ColourWheel* colourWheel_;
 
 };
+
 #endif // MAINWINDOW_H
