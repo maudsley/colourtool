@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "basecolourwidget.h"
+#include "favouriteswidget.h"
 #include "colourwheeldisplay.h"
 
 QT_BEGIN_NAMESPACE
@@ -26,6 +27,9 @@ private:
     Ui::MainWindow *ui;
 
     BaseColourWidget* baseColourWidget_;
+
+    FavouritesWidget* favouritesWidget_;
+
     ColourWheelDisplay* colourWheelDisplay_;
 
 };

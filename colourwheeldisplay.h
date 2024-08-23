@@ -1,12 +1,12 @@
 #ifndef COLOURWHEELDISPLAY_H
 #define COLOURWHEELDISPLAY_H
 
-#include <QWidget>
+#include <QFrame>
 #include "colourwheel.h"
 #include "colourgallerywidget.h"
 #include "colourwheelindicators.h"
 
-class ColourWheelDisplay : public QWidget
+class ColourWheelDisplay : public QFrame
 {
     Q_OBJECT
 public:
@@ -27,6 +27,8 @@ signals:
 private:
 
     void wheelDisplayChanged();
+
+    void galleryIndicatorSelectionChanged();
 
     ColourWheel* colourWheel_;
 

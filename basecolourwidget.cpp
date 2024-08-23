@@ -1,13 +1,17 @@
 #include "basecolourwidget.h"
 #include "rgbcoloursampler.h"
 #include <QVBoxLayout>
+#include <QFrame>
 
 BaseColourWidget::BaseColourWidget(QWidget *parent)
     : QDockWidget{parent}
 {
     setWindowTitle("Base Colour");
+    setFeatures(QDockWidget::DockWidgetFloatable);
+    setMinimumWidth(250);
 
-    QWidget* centralWidget = new QWidget();
+    QFrame* centralWidget = new QFrame();
+    centralWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
     setWidget(centralWidget);
 
     QVBoxLayout* widgetLayout = new QVBoxLayout(centralWidget);

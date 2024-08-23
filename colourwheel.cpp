@@ -244,6 +244,10 @@ void ColourWheel::mousePressEvent(QMouseEvent *event)
         mouseDown_ = true;
 
         indicators_.setSelectedIndicator(selectedIndicatorColour);
+
+        update();
+
+        emit wheelColourChanged();
     }
     else
     {

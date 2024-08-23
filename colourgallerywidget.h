@@ -16,11 +16,23 @@ public:
 
 signals:
 
+    void galleryIndicatorSelectionChanged();
+
 private:
+
+    std::vector<QRect> tileRects() const;
+
+    void changeTileSelection(const size_t index);
+
+    void mousePressEvent(QMouseEvent *event) override;
+
+    void mouseMoveEvent(QMouseEvent *event) override;
 
     void paintEvent(QPaintEvent *event) override;
 
     ColourWheelIndicators galleryIndicators_;
+
+    QPoint dragStartPosition_;
 
 };
 

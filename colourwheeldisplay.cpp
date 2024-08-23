@@ -2,20 +2,25 @@
 #include <QVBoxLayout>
 
 ColourWheelDisplay::ColourWheelDisplay(QWidget *parent)
-    : QWidget{parent}
+    : QFrame{parent}
 {
+    setFrameStyle(QFrame::Panel | QFrame::Raised);
+
     QVBoxLayout* outerLayout = new QVBoxLayout(parent);
     outerLayout->setContentsMargins(0, 0, 0, 0);
+    outerLayout->setSpacing(0);
     outerLayout->addWidget(this);
 
     QVBoxLayout* innerLayout = new QVBoxLayout(this);
     innerLayout->setContentsMargins(0, 0, 0, 0);
+    innerLayout->setSpacing(0);
 
     colourWheel_ = new ColourWheel();
     connect(colourWheel_, &ColourWheel::wheelColourChanged, this, &ColourWheelDisplay::wheelDisplayChanged);
     innerLayout->addWidget(colourWheel_);
 
     colourGalleryWidget_ = new ColourGalleryWidget();
+    connect(colourGalleryWidget_, &ColourGalleryWidget::galleryIndicatorSelectionChanged, this, &ColourWheelDisplay::galleryIndicatorSelectionChanged);
     innerLayout->addWidget(colourGalleryWidget_);
 
     innerLayout->setStretch(0, 3);
@@ -40,6 +45,15 @@ void ColourWheelDisplay::wheelDisplayChanged()
     // Copy indicators to the gallery when they are updated by the wheel
 
     colourGalleryWidget_->setGalleryIndicators(colourWheel_->indicators());
+
+    emit wheelColourDisplayChanged();
+}
+
+void ColourWheelDisplay::galleryIndicatorSelectionChanged()
+{
+    // Copy indicators from the gallery to the wheel
+
+    colourWheel_->setIndicators(colourGalleryWidget_->galleryIndicators());
 
     emit wheelColourDisplayChanged();
 }

@@ -19,7 +19,8 @@ SOURCES += \
     colourwheel.cpp \
     colourwheeldisplay.cpp \
     colourwheelindicators.cpp \
-    favoriteswidget.cpp \
+    favouriteitemwidget.cpp \
+    favouriteswidget.cpp \
     main.cpp \
     mainwindow.cpp \
     rgbcoloursampler.cpp
@@ -35,7 +36,8 @@ HEADERS += \
     colourwheel.h \
     colourwheeldisplay.h \
     colourwheelindicators.h \
-    favoriteswidget.h \
+    favouriteitemwidget.h \
+    favouriteswidget.h \
     mainwindow.h \
     rgbcoloursampler.h
 
@@ -46,3 +48,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    resources.qrc

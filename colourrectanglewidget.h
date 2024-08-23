@@ -20,7 +20,13 @@ signals:
 
 private:
 
+    void mousePressEvent(QMouseEvent *event) override;
+
+    void mouseMoveEvent(QMouseEvent *event) override;
+
     QColor colour_;
+
+    QPoint dragStartPosition_;
 
 };
 
