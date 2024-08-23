@@ -2,6 +2,8 @@
 #define COLOURWHEEL_H
 
 #include <QWidget>
+#include "colourwheelindicators.h"
+#include <optional>
 
 class ColourWheel : public QWidget
 {
@@ -9,9 +11,13 @@ class ColourWheel : public QWidget
 public:
     explicit ColourWheel(QWidget *parent = nullptr);
 
-    void setIndicatorColour(const QColor& indicatorColour);
+    void setIndicators(const ColourWheelIndicators& indicators);
 
-    QColor indicatorColour() const;
+    ColourWheelIndicators indicators() const;
+
+    void setActiveIndicatorColour(const QColor& colour);
+
+    std::optional<QColor> activeIndicatorColour() const;
 
     QRect wheelRect() const;
 
@@ -23,9 +29,13 @@ signals:
 
 private:
 
-    QPoint indicatorColourPos() const;
+    QImage drawWheelImage();
 
-    QColor colourFromPoint(const QPoint& point) const;
+    QPoint pointFromColour(const QColor& colour) const;
+
+    QColor colourFromWidgetPoint(const QPoint& point) const;
+
+    QColor colourFromImagePoint(const QPoint& point) const;
 
     void paintEvent(QPaintEvent *event) override;
 
@@ -35,7 +45,9 @@ private:
 
     void mouseMoveEvent(QMouseEvent *event) override;
 
-    QColor indicatorColour_;
+    QImage wheelImage_;
+
+    ColourWheelIndicators indicators_;
 
     bool mouseDown_{ false };
 

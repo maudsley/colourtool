@@ -6,21 +6,19 @@
 ColourWheel::ColourWheel(QWidget *parent)
     : QWidget{parent}
 {
-    QVBoxLayout* layout = new QVBoxLayout(parent);
-
-    layout->addWidget(this);
+    wheelImage_ = drawWheelImage();
 }
 
-void ColourWheel::setIndicatorColour(const QColor& indicatorColour)
+void ColourWheel::setIndicators(const ColourWheelIndicators& indicators)
 {
-    indicatorColour_ = indicatorColour;
+    indicators_ = indicators;
 
     update();
 }
 
-QColor ColourWheel::indicatorColour() const
+ColourWheelIndicators ColourWheel::indicators() const
 {
-    return indicatorColour_;
+    return indicators_;
 }
 
 QRect ColourWheel::wheelRect() const
@@ -35,13 +33,37 @@ int ColourWheel::wheelRectBuffer() const
     return 10;
 }
 
-QPoint ColourWheel::indicatorColourPos() const
+QImage ColourWheel::drawWheelImage()
 {
-    double h = indicatorColour_.hslHueF();
+    QRect wheel = wheelRect();
+    int wheelBuffer = wheelRectBuffer();
+    int totalWidth = wheel.width() + wheelBuffer * 2;
+    int totalHeight = wheel.height() + wheelBuffer * 2;
+
+    QImage image(totalWidth, totalHeight, QImage::Format_RGB888);
+
+    for (int y = 0; y < totalHeight; y++)
+    {
+        for (int x = 0; x < totalWidth; x++)
+        {
+            QPoint imagePoint = QPoint(x, y);
+
+            QColor colour = colourFromImagePoint(imagePoint);
+
+            image.setPixelColor(x, y, colour);
+        }
+    }
+
+    return image;
+}
+
+QPoint ColourWheel::pointFromColour(const QColor& colour) const
+{
+    double h = colour.hslHueF();
 
     double t = (h * 2 - 1) * M_PI;
 
-    double s = indicatorColour_.hslSaturationF();
+    double s = colour.hslSaturationF();
 
     double fx = std::sin(-t) * s;
     double fy = std::cos(t) * s;
@@ -51,10 +73,16 @@ QPoint ColourWheel::indicatorColourPos() const
     double x = (fx * 0.5 + 0.5) * wheel.width() + wheelBuffer;
     double y = (fy * 0.5 + 0.5) * wheel.height() + wheelBuffer;
 
-    return QPoint(x, y);
+    QPoint drawPos = geometry().center();
+    drawPos.setX(drawPos.x() - wheelImage_.width() / 2);
+    drawPos.setY(drawPos.y() - wheelImage_.height() / 2);
+
+    QPoint result = QPoint(x,y) + drawPos;
+
+    return result;
 }
 
-QColor ColourWheel::colourFromPoint(const QPoint& point) const
+QColor ColourWheel::colourFromWidgetPoint(const QPoint& point) const
 {
     QRect wheel = wheelRect();
     int wheelBuffer = wheelRectBuffer();
@@ -67,8 +95,18 @@ QColor ColourWheel::colourFromPoint(const QPoint& point) const
 
     QPoint imagePoint = point - drawPos;
 
-    double fx = (imagePoint.x() - wheelBuffer) / double(wheel.width()) * 2 - 1;
-    double fy = (imagePoint.y() - wheelBuffer) / double(wheel.height()) * 2 - 1;
+    QColor result = colourFromImagePoint(imagePoint);
+
+    return result;
+}
+
+QColor ColourWheel::colourFromImagePoint(const QPoint& point) const
+{
+    QRect wheel = wheelRect();
+    int wheelBuffer = wheelRectBuffer();
+
+    double fx = (point.x() - wheelBuffer) / double(wheel.width()) * 2 - 1;
+    double fy = (point.y() - wheelBuffer) / double(wheel.height()) * 2 - 1;
 
     double s = std::hypot(fx, fy);
 
@@ -106,69 +144,111 @@ void ColourWheel::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
 
-    QRect wheel = wheelRect();
-    int wheelBuffer = wheelRectBuffer();
-    int totalWidth = wheel.width() + wheelBuffer * 2;
-    int totalHeight = wheel.height() + wheelBuffer * 2;
-
-    QImage image(totalWidth, totalHeight, QImage::Format_RGB888);
-
     QPoint drawPos = geometry().center();
-    drawPos.setX(drawPos.x() - totalWidth / 2);
-    drawPos.setY(drawPos.y() - totalHeight / 2);
+    drawPos.setX(drawPos.x() - wheelImage_.width() / 2);
+    drawPos.setY(drawPos.y() - wheelImage_.height() / 2);
 
-    for (int y = 0; y < totalHeight; y++)
-    {
-        for (int x = 0; x < totalWidth; x++)
-        {
-            QPoint imagePoint = drawPos + QPoint(x, y);
+    painter.drawImage(drawPos, wheelImage_);
 
-            QColor colour = colourFromPoint(imagePoint);
-
-            image.setPixelColor(x, y, colour);
-        }
-    }
-
-    painter.drawImage(drawPos, image);
-
-    // Draw indicator
+    // Draw indicators
 
     painter.setRenderHint(QPainter::Antialiasing, true);
 
-    QPoint indicatorPos = drawPos + indicatorColourPos();
+    std::vector<QColor> indicatorColours = indicators_.colours();
 
-    // Line
-    QPoint wheelCenterPos = drawPos + QPoint(totalWidth / 2, totalHeight / 2);
-    painter.setPen(QPen(Qt::black, 2));
-    painter.drawLine(wheelCenterPos, indicatorPos);
+    std::optional<size_t> selectedColour = indicators_.selectedIndicator();
 
-    // Black border
-    painter.setPen(Qt::black);
-    painter.setBrush(Qt::black);
-    painter.drawEllipse(indicatorPos, 10, 10);
+    for (size_t i = 0; i < indicatorColours.size(); i++)
+    {
+        bool selected = false;
 
-    // White interior
-    painter.setPen(Qt::white);
-    painter.setBrush(Qt::white);
-    painter.drawEllipse(indicatorPos, 8, 8);
+        if (selectedColour)
+        {
+            if (selectedColour.value() == i)
+            {
+                selected = true;
+            }
+        }
 
-    // Colour interior
-    painter.setPen(Qt::white);
-    painter.setBrush(indicatorColour_);
-    painter.drawEllipse(indicatorPos, 7, 7);
+        QColor indicatorColour = indicatorColours.at(i);
+
+        QPoint indicatorPos = pointFromColour(indicatorColour);
+
+        // Draw connecting line
+
+        QPoint wheelCenterPos = drawPos + QPoint(wheelImage_.width() / 2, wheelImage_.height() / 2);
+        painter.setPen(QPen(Qt::black, 2));
+        painter.drawLine(wheelCenterPos, indicatorPos);
+
+        if (selected) // Bigger when selected
+        {
+            // Draw border
+
+            painter.setPen(Qt::black);
+            painter.setBrush(Qt::white);
+            painter.drawEllipse(indicatorPos, 11, 11);
+
+            // Draw colour interior
+
+            painter.setPen(Qt::black);
+            painter.setBrush(indicatorColour);
+            painter.drawEllipse(indicatorPos, 8, 8);
+        }
+        else
+        {
+            // Draw border
+
+            painter.setPen(Qt::black);
+            painter.setBrush(Qt::white);
+            painter.drawEllipse(indicatorPos, 8, 8);
+
+            // Draw colour interior
+
+            painter.setPen(Qt::black);
+            painter.setBrush(indicatorColour);
+            painter.drawEllipse(indicatorPos, 5, 5);
+        }
+
+
+    }
 
     painter.setRenderHint(QPainter::Antialiasing, false);
 }
 
 void ColourWheel::mousePressEvent(QMouseEvent *event)
 {
-    mouseDown_ = true;
+    std::vector<QColor> indicatorColours = indicators_.colours();
 
-    QColor colour = colourFromPoint(event->pos());
+    std::optional<size_t> selectedIndicatorColour;
 
-    setIndicatorColour(colour);
+    for (size_t i = 0; i < indicatorColours.size(); i++)
+    {
+        QColor colour = indicatorColours.at(i);
 
-    emit wheelColourChanged();
+        QPoint point = pointFromColour(colour);
+
+        QPoint pointMouseDelta = point - event->pos();
+
+        double dist = std::hypot(pointMouseDelta.x(), pointMouseDelta.y());
+
+        if (dist < 8.0)
+        {
+            selectedIndicatorColour = i; // Selection changed
+
+            break;
+        }
+    }
+
+    if (selectedIndicatorColour)
+    {
+        mouseDown_ = true;
+
+        indicators_.setSelectedIndicator(selectedIndicatorColour);
+    }
+    else
+    {
+        mouseDown_ = false;
+    }
 }
 
 void ColourWheel::mouseReleaseEvent(QMouseEvent*)
@@ -180,9 +260,20 @@ void ColourWheel::mouseMoveEvent(QMouseEvent *event)
 {
     if (mouseDown_)
     {
-        QColor colour = colourFromPoint(event->pos());
+        std::vector<QColor> indicatorColours = indicators_.colours();
 
-        setIndicatorColour(colour);
+        std::optional<size_t> selectedIndicatorColour = indicators_.selectedIndicator();
+
+        if (selectedIndicatorColour)
+        {
+            QColor newColour = colourFromWidgetPoint(event->pos());
+
+            indicatorColours[selectedIndicatorColour.value()] = newColour;
+
+            indicators_.setColours(indicatorColours);
+        }
+
+        update();
 
         emit wheelColourChanged();
     }

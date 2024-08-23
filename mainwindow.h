@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include "basecolourwidget.h"
-#include "colourwheel.h"
+#include "colourwheeldisplay.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -26,7 +26,7 @@ private:
     Ui::MainWindow *ui;
 
     BaseColourWidget* baseColourWidget_;
-    ColourWheel* colourWheel_;
+    ColourWheelDisplay* colourWheelDisplay_;
 
 };
 

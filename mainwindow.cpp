@@ -15,8 +15,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     addDockWidget(Qt::LeftDockWidgetArea, baseColourWidget_);
 
-    colourWheel_ = new ColourWheel(ui->widget);
-    connect(colourWheel_, &ColourWheel::wheelColourChanged, this, &MainWindow::handleWheelColourChanged);
+    colourWheelDisplay_ = new ColourWheelDisplay(ui->widget);
+    connect(colourWheelDisplay_, &ColourWheelDisplay::wheelColourDisplayChanged, this, &MainWindow::handleWheelColourChanged);
+
+    ColourWheelIndicators indicators;
+    indicators.setColours({Qt::black, Qt::white, Qt::gray});
+    indicators.setSelectedIndicator(0);
+    colourWheelDisplay_->setDisplayIndicators(indicators);
 }
 
 MainWindow::~MainWindow()
@@ -28,12 +33,18 @@ void MainWindow::handleBaseColourChanged()
 {
     QColor colour = baseColourWidget_->baseColour();
 
-    colourWheel_->setIndicatorColour(colour);
+    ColourWheelIndicators indicators = colourWheelDisplay_->displayIndicators();
+    indicators.setActiveIndicatorColour(colour);
+    colourWheelDisplay_->setDisplayIndicators(indicators);
 }
 
 void MainWindow::handleWheelColourChanged()
 {
-    QColor colour = colourWheel_->indicatorColour();
+    ColourWheelIndicators indicators = colourWheelDisplay_->displayIndicators();
+    std::optional<QColor> wheelColour = indicators.activeIndicatorColour();
 
-    baseColourWidget_->setSliderColours(colour);
+    if (wheelColour)
+    {
+        baseColourWidget_->setSliderColours(wheelColour.value());
+    }
 }

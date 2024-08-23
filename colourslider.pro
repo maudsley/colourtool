@@ -10,24 +10,32 @@ CONFIG += c++17
 
 SOURCES += \
     basecolourwidget.cpp \
+    colourgallerywidget.cpp \
     colourrectanglewidget.cpp \
     coloursamplerdelegate.cpp \
     colourslider.cpp \
     coloursliderbar.cpp \
     coloursliderindicator.cpp \
     colourwheel.cpp \
+    colourwheeldisplay.cpp \
+    colourwheelindicators.cpp \
+    favoriteswidget.cpp \
     main.cpp \
     mainwindow.cpp \
     rgbcoloursampler.cpp
 
 HEADERS += \
     basecolourwidget.h \
+    colourgallerywidget.h \
     colourrectanglewidget.h \
     coloursamplerdelegate.h \
     colourslider.h \
     coloursliderbar.h \
     coloursliderindicator.h \
     colourwheel.h \
+    colourwheeldisplay.h \
+    colourwheelindicators.h \
+    favoriteswidget.h \
     mainwindow.h \
     rgbcoloursampler.h
 
