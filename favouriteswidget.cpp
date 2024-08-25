@@ -1,5 +1,6 @@
 #include "favouriteswidget.h"
 #include "favouriteitemwidget.h"
+#include "frameseperator.h"
 #include <QVBoxLayout>
 #include <QDragEnterEvent>
 #include <QDropEvent>
@@ -12,7 +13,7 @@ FavouritesWidget::FavouritesWidget(QWidget *parent)
 {
     setWindowTitle("Favourite Colours");
     setFeatures(QDockWidget::DockWidgetFloatable);
-    setMinimumWidth(250);
+    setMinimumWidth(220);
     setAcceptDrops(true);
 
     QWidget* centralWidget = new QWidget();
@@ -24,6 +25,7 @@ FavouritesWidget::FavouritesWidget(QWidget *parent)
     layout->setSpacing(0);
 
     scrollArea_ = new QScrollArea();
+    scrollArea_->setFrameStyle(QFrame::NoFrame);
     scrollArea_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     layout->addWidget(scrollArea_);
 
@@ -33,7 +35,7 @@ FavouritesWidget::FavouritesWidget(QWidget *parent)
 
     layout_ = new QVBoxLayout(scrollAreaWidget_);
     layout_->setContentsMargins(0, 0, 0, 0);
-    layout_->setSpacing(1);
+    layout_->setSpacing(0);
     layout_->addStretch();
 
     QToolBar* toolBar = new QToolBar();
@@ -56,6 +58,9 @@ void FavouritesWidget::dropEvent(QDropEvent *event)
     if (colourVariant.canConvert<QColor>())
     {
         QColor colour = colourVariant.value<QColor>();
+
+        FrameSeperator* seperator = new FrameSeperator("");
+        layout_->insertWidget(0, seperator);
 
         FavouriteItemWidget* item = new FavouriteItemWidget(colour);
         layout_->insertWidget(0, item);

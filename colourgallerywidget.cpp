@@ -8,7 +8,7 @@
 ColourGalleryWidget::ColourGalleryWidget(QWidget *parent)
     : QWidget{parent}
 {
-    setFixedHeight(100);
+    setFixedHeight(80);
 }
 
 void ColourGalleryWidget::setGalleryIndicators(const ColourWheelIndicators& indicators)

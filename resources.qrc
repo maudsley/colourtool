@@ -2,5 +2,9 @@
     <qresource prefix="/icons">
         <file>down.png</file>
         <file>right.png</file>
+        <file>satdec.png</file>
+        <file>satinc.png</file>
+        <file>litdec.png</file>
+        <file>litinc.png</file>
     </qresource>
 </RCC>

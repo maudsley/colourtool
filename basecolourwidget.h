@@ -15,20 +15,38 @@ public:
 
     void setSliderColours(const QColor& colour);
 
-    void handleRedSliderChanged();
-    void handleGreenSliderChanged();
-    void handleBlueSliderChanged();
-
 signals:
 
     void baseColourChanged();
 
 private:
 
+    void handleRedSliderChanged();
+    void handleGreenSliderChanged();
+    void handleBlueSliderChanged();
+
+    void handleHueSliderChanged();
+    void handleSaturationSliderChanged();
+    void handleLightnessSliderChanged();
+
+    void buttonSaturationIncrement();
+    void buttonSaturationDecrement();
+    void buttonLightnessIncrement();
+    void buttonLightnessDecrement();
+
+    void handleHexEditChanged();
+
     ColourRectangleWidget* colourRectangle_;
+
     ColourSlider* redSlider_;
     ColourSlider* greenSlider_;
     ColourSlider* blueSlider_;
+
+    ColourSlider* hueSlider_;
+    ColourSlider* saturationSlider_;
+    ColourSlider* lightnessSlider_;
+
+    QLineEdit* hexEdit_;
 
 };
 

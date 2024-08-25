@@ -4,7 +4,9 @@
 ColourWheelDisplay::ColourWheelDisplay(QWidget *parent)
     : QFrame{parent}
 {
-    setFrameStyle(QFrame::Panel | QFrame::Raised);
+    //setFrameStyle(QFrame::Panel | QFrame::Raised);
+
+    setFocusPolicy(Qt::StrongFocus); // Let this widget take focus
 
     QVBoxLayout* outerLayout = new QVBoxLayout(parent);
     outerLayout->setContentsMargins(0, 0, 0, 0);

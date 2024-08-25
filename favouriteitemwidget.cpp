@@ -7,7 +7,7 @@
 
 FavouriteItemWidget::FavouriteItemWidget(const QColor& colour) : colour_(colour)
 {
-    setFrameStyle(QFrame::Panel | QFrame::Raised);
+    setFrameStyle(QFrame::Plain);//QFrame::Panel | QFrame::Sunken);
 
     QVBoxLayout* vlayout = new QVBoxLayout();
     vlayout->setContentsMargins(3, 3, 3, 3);
@@ -27,7 +27,7 @@ FavouriteItemWidget::FavouriteItemWidget(const QColor& colour) : colour_(colour)
 
 QPixmap FavouriteItemWidget::drawTile() const
 {
-    QPixmap pixmap(32, 32);
+    QPixmap pixmap(40, 40);
 
     QPainter painter(&pixmap);
 

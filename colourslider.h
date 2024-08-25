@@ -5,6 +5,7 @@
 #include "coloursliderbar.h"
 #include "coloursliderindicator.h"
 #include "coloursamplerdelegate.h"
+#include <QLineEdit>
 #include <QPoint>
 #include <optional>
 #include <memory>
@@ -13,13 +14,15 @@ class ColourSlider : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ColourSlider(QWidget *parent = nullptr);
+    explicit ColourSlider(const QString& label);
+
+    double sliderValue();
+
+    void setSliderValue(const double value);
 
     QColor sliderColour() const;
 
     void setColourSamplerDelegate(const std::shared_ptr<ColourSamplerDelegate>& colourSamplerDelegate);
-
-    std::shared_ptr<ColourSamplerDelegate> colourBarSamplerDelegate() const;
 
 signals:
 
@@ -35,9 +38,13 @@ private:
 
     void mouseMoveEvent(QMouseEvent *event) override;
 
+    void colourSliderTextChanged();
+
     ColourSliderBar* bar_;
 
     ColourSliderIndicator* indicator_;
+
+    QLineEdit* edit_;
 
     bool mouseDown_{ false };
 

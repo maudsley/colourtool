@@ -14,6 +14,8 @@ public:
 
     virtual double getPosition() const = 0;
 
+    virtual int getMaxValue() const = 0;
+
 };
 
 #endif // COLOURSAMPLERDELEGATE_H

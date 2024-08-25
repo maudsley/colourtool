@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "basecolourwidget.h"
 #include "favouriteswidget.h"
+#include "colourgridwidget.h"
 #include "colourwheeldisplay.h"
 
 QT_BEGIN_NAMESPACE
@@ -24,9 +25,14 @@ public:
 
 private:
 
+    void makeRandomColours();
+    void showAboutInformation();
+
     Ui::MainWindow *ui;
 
     BaseColourWidget* baseColourWidget_;
+
+    ColourGridWidget* colourGridWidget_;
 
     FavouritesWidget* favouritesWidget_;
 

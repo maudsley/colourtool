@@ -73,3 +73,8 @@ double RgbColourSampler::getPosition() const
 
     return pos;
 }
+
+int RgbColourSampler::getMaxValue() const
+{
+    return 255;
+}

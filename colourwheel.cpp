@@ -33,7 +33,7 @@ int ColourWheel::wheelRectBuffer() const
     return 10;
 }
 
-QImage ColourWheel::drawWheelImage()
+QImage ColourWheel::drawWheelImage() const
 {
     QRect wheel = wheelRect();
     int wheelBuffer = wheelRectBuffer();

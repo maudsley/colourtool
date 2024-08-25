@@ -29,7 +29,7 @@ signals:
 
 private:
 
-    QImage drawWheelImage();
+    QImage drawWheelImage() const;
 
     QPoint pointFromColour(const QColor& colour) const;
 

@@ -1,16 +1,16 @@
-#ifndef RGBCOLOURSAMPLER_H
-#define RGBCOLOURSAMPLER_H
+#ifndef HSLCOLOURSAMPLER_H
+#define HSLCOLOURSAMPLER_H
 
 #include "coloursamplerdelegate.h"
 
-class RgbColourSampler : public ColourSamplerDelegate
+class HslColourSampler : public ColourSamplerDelegate
 {
 public:
-    RgbColourSampler();
+    HslColourSampler();
 
-    ~RgbColourSampler() override;
+    ~HslColourSampler() override;
 
-    enum Channel {ChannelNone, ChannelRed, ChannelGreen, ChannelBlue};
+    enum Channel {ChannelNone, ChannelHue, ChannelSaturation, ChannelLightness};
 
     void setChannel(const Channel channel);
 
@@ -31,7 +31,6 @@ private:
     Channel channel_{ ChannelNone };
 
     QColor colour_{ Qt::black };
-
 };
 
-#endif // RGBCOLOURSAMPLER_H
+#endif // HSLCOLOURSAMPLER_H

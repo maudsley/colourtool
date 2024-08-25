@@ -11,6 +11,8 @@ CONFIG += c++17
 SOURCES += \
     basecolourwidget.cpp \
     colourgallerywidget.cpp \
+    colourgrid.cpp \
+    colourgridwidget.cpp \
     colourrectanglewidget.cpp \
     coloursamplerdelegate.cpp \
     colourslider.cpp \
@@ -21,6 +23,8 @@ SOURCES += \
     colourwheelindicators.cpp \
     favouriteitemwidget.cpp \
     favouriteswidget.cpp \
+    frameseperator.cpp \
+    hslcoloursampler.cpp \
     main.cpp \
     mainwindow.cpp \
     rgbcoloursampler.cpp
@@ -28,6 +32,8 @@ SOURCES += \
 HEADERS += \
     basecolourwidget.h \
     colourgallerywidget.h \
+    colourgrid.h \
+    colourgridwidget.h \
     colourrectanglewidget.h \
     coloursamplerdelegate.h \
     colourslider.h \
@@ -38,6 +44,8 @@ HEADERS += \
     colourwheelindicators.h \
     favouriteitemwidget.h \
     favouriteswidget.h \
+    frameseperator.h \
+    hslcoloursampler.h \
     mainwindow.h \
     rgbcoloursampler.h
 

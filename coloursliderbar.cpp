@@ -46,7 +46,7 @@ QRect ColourSliderBar::sliderGeometry() const
     return grabRect;
 }
 
-void ColourSliderBar::paintEvent(QPaintEvent *event)
+void ColourSliderBar::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
 
