@@ -6,5 +6,10 @@
         <file>satinc.png</file>
         <file>litdec.png</file>
         <file>litinc.png</file>
+        <file>cminus.png</file>
+        <file>cplus.png</file>
+        <file>copy.png</file>
+        <file>paste.png</file>
+        <file>delete.png</file>
     </qresource>
 </RCC>

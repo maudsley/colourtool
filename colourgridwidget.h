@@ -16,6 +16,8 @@ public:
 
 signals:
 
+    void onColourSelected(const QColor& colour);
+
 private:
 
     ColourGrid* colourGrid_;

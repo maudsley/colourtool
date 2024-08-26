@@ -5,10 +5,12 @@
 ColourGridWidget::ColourGridWidget(QWidget *parent)
     : QDockWidget{parent}
 {
-    setWindowTitle("Other Colours");
+    setWindowTitle("Related Colours");
     setFeatures(QDockWidget::DockWidgetFloatable);
 
     colourGrid_ = new ColourGrid();
+    connect(colourGrid_, &ColourGrid::onColourSelected, this, &ColourGridWidget::onColourSelected);
+
     setWidget(colourGrid_);
 }
 

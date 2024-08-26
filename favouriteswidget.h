@@ -2,8 +2,9 @@
 #define FAVOURITESWIDGET_H
 
 #include <QDockWidget>
-#include <QScrollArea>
-#include <QVBoxLayout>
+#include "favouriteitemwidget.h"
+#include "favouritesinformation.h"
+#include <QTableWidget>
 
 class FavouritesWidget : public QDockWidget
 {
@@ -11,17 +12,31 @@ class FavouritesWidget : public QDockWidget
 public:
     explicit FavouritesWidget(QWidget *parent = nullptr);
 
-signals:
-
 private:
+
+    void updateTableDisplay();
+
+    FavouriteItemWidget* addFavourite(const QColor& colour);
+
+    void deleteSelected();
+
+    void copySelected();
+
+    void pasteItem();
+
+    void saveSelection();
+
+    void restoreSelectionAndResize();
 
     void dragEnterEvent(QDragEnterEvent *event) override;
 
     void dropEvent(QDropEvent *event) override;
 
-    QScrollArea* scrollArea_;
-    QWidget* scrollAreaWidget_;
-    QVBoxLayout* layout_;
+    FavouritesInformation* infoMessage_;
+
+    QTableWidget* table_;
+
+    QModelIndexList tableSavedSelection_;
 
 };
 

@@ -22,6 +22,7 @@ SOURCES += \
     colourwheeldisplay.cpp \
     colourwheelindicators.cpp \
     favouriteitemwidget.cpp \
+    favouritesinformation.cpp \
     favouriteswidget.cpp \
     frameseperator.cpp \
     hslcoloursampler.cpp \
@@ -43,6 +44,7 @@ HEADERS += \
     colourwheeldisplay.h \
     colourwheelindicators.h \
     favouriteitemwidget.h \
+    favouritesinformation.h \
     favouriteswidget.h \
     frameseperator.h \
     hslcoloursampler.h \

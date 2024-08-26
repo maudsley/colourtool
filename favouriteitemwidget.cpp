@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QPainter>
+#include <QToolBar>
 
 FavouriteItemWidget::FavouriteItemWidget(const QColor& colour) : colour_(colour)
 {
@@ -23,6 +24,11 @@ FavouriteItemWidget::FavouriteItemWidget(const QColor& colour) : colour_(colour)
     setupExpandedView();
 
     collapseView(); // Initially collapsed
+}
+
+QColor FavouriteItemWidget::colour()
+{
+    return colour_;
 }
 
 QPixmap FavouriteItemWidget::drawTile() const
@@ -71,12 +77,11 @@ void FavouriteItemWidget::setupCollapsedView()
 
     hlayout->addStretch();
 
-    QPixmap arrow(":/icons/right.png");
-    QPushButton* button = new QPushButton();
-    button->setFixedSize(16, 16);
-    connect(button, &QPushButton::clicked, this, &FavouriteItemWidget::expandView);
-    button->setIcon(arrow);
-    hlayout->addWidget(button);
+    QToolBar* toolBar = new QToolBar();
+    toolBar->setIconSize(QSize(16, 16));
+    QAction* expandAction = toolBar->addAction(QPixmap(":/icons/right.png"), "Expand");
+    connect(expandAction, &QAction::triggered, this, &FavouriteItemWidget::expandView);
+    hlayout->addWidget(toolBar);
 }
 
 void FavouriteItemWidget::setupExpandedView()
@@ -100,15 +105,14 @@ void FavouriteItemWidget::setupExpandedView()
 
     hlayout->addStretch();
 
-    QPixmap arrow(":/icons/down.png");
-    QPushButton* button = new QPushButton();
-    button->setFixedSize(16, 16);
-    connect(button, &QPushButton::clicked, this, &FavouriteItemWidget::collapseView);
-    button->setIcon(arrow);
-    hlayout->addWidget(button);
+    QToolBar* toolBar = new QToolBar();
+    toolBar->setIconSize(QSize(16, 16));
+    QAction* collapseAction = toolBar->addAction(QPixmap(":/icons/down.png"), "Collapse");
+    connect(collapseAction, &QAction::triggered, this, &FavouriteItemWidget::collapseView);
+    hlayout->addWidget(toolBar);
 
     QWidget* detailsWidget = new QWidget();
-    detailsWidget->setStyleSheet("background-color:white;");
+    detailsWidget->setStyleSheet("background-color: white;");
     vlayout->addWidget(detailsWidget);
     QVBoxLayout* details = new QVBoxLayout(detailsWidget);
     details->setSpacing(0);
@@ -134,14 +138,22 @@ void FavouriteItemWidget::setupExpandedView()
 
 void FavouriteItemWidget::collapseView()
 {
+    emit onItemCollapse();
+
     collapsedWidget_->show();
     expandedWidget_->hide();
+
+    emit onItemCollapsed();
 }
 
 void FavouriteItemWidget::expandView()
 {
+    emit onItemExpand();
+
     collapsedWidget_->hide();
     expandedWidget_->show();
+
+    emit onItemExpanded();
 }
 
 QString FavouriteItemWidget::colourRgbString() const

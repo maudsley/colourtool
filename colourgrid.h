@@ -15,9 +15,17 @@ public:
 
 signals:
 
+    void onColourSelected(const QColor& colour);
+
 private:
 
-    void paintEvent(QPaintEvent*);
+    QSize getTileSize() const;
+
+    QColor pointToColour(const QPoint& point) const;
+
+    void paintEvent(QPaintEvent*) override;
+
+    void mousePressEvent(QMouseEvent *event) override;
 
     QColor colour_;
 

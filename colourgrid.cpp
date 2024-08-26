@@ -1,5 +1,6 @@
 #include "colourgrid.h"
 #include <QPainter>
+#include <QMouseEvent>
 
 ColourGrid::ColourGrid(QWidget *parent)
     : QWidget{parent}
@@ -19,47 +20,78 @@ void ColourGrid::setColour(const QColor& colour)
     update();
 }
 
+QSize ColourGrid::getTileSize() const
+{
+    const int tileWidth = 16;
+    const int tileHeight = (tileWidth * 3) / 4;
+
+    return QSize(tileWidth, tileHeight);
+}
+
+QColor ColourGrid::pointToColour(const QPoint& point) const
+{
+    QSize tileSize = getTileSize();
+    int px = point.x() / tileSize.width();
+    int py = point.y() / tileSize.height();
+
+    const int columnCount = 6;
+
+    int wx = px / columnCount;
+    int hx = px % columnCount;
+    int nx = wx + hx;
+    int ny = 1000 - py * 20;
+
+    if (ny < 0)
+    {
+        ny = 0;
+    }
+
+    QColor colour = colour_;
+
+    int newHue = (colour.hslHue() + nx * 10) % 360;
+    int newSaturation = ny % 256;
+    int newLightness = ny % 256;
+
+    colour.setHsl(newHue, newSaturation, newLightness);
+
+    return colour;
+}
+
 void ColourGrid::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
 
     QRect gridRect = rect();
 
-    const int tileWidth = 16;
-    const int tileHeight = (tileWidth * 3) / 4;
+    QSize tileSize = getTileSize();
 
-    int xcount = gridRect.width() / tileWidth;
+    int xcount = gridRect.width() / tileSize.width();
     xcount += 1; // Round up
 
-    int ycount = gridRect.height() / tileHeight;
+    int ycount = gridRect.height() / tileSize.height();
     ycount += 1; // Round up
 
     for (int y = 0; y < ycount; y++)
     {
         for (int x = 0; x < xcount; x++)
         {
-            const double fx = x / double(xcount - 1);
-            const double fy = y / double(ycount - 1);
+            QPoint point = QPoint(x * tileSize.width(), y * tileSize.height());
 
-            int xpos = x * tileWidth;
-            int ypos = y * tileHeight;
+            QRect tile = QRect(point.x(), point.y(), tileSize.width(), tileSize.height());
 
-            QRect tile(xpos, ypos, tileWidth, tileHeight);
+            QColor colour = pointToColour(point);
 
-            QColor tileColour = colour_;
-
-            double h1 = std::max(tileColour.hueF() - 0.1, 0.0);
-            double h2 = std::min(tileColour.hueF() + 0.1, 1.0);
-
-            double h = h1 * (1 - fx) + h2 * fx;
-            double s = tileColour.saturationF();
-
-            tileColour.setHslF(h, s, fx);
-
-            painter.fillRect(tile, tileColour);
+            painter.fillRect(tile, colour);
 
             painter.setPen(Qt::black);
             painter.drawRect(tile);
         }
     }
+}
+
+void ColourGrid::mousePressEvent(QMouseEvent *event)
+{
+    QColor colour = pointToColour(event->pos());
+
+    emit onColourSelected(colour);
 }

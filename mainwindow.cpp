@@ -33,10 +33,12 @@ MainWindow::MainWindow(QWidget *parent)
     addDockWidget(Qt::RightDockWidgetArea, favouritesWidget_);
 
     colourGridWidget_ = new ColourGridWidget();
+    connect(colourGridWidget_, &ColourGridWidget::onColourSelected, this, &MainWindow::handleGridColourSelected);
     addDockWidget(Qt::BottomDockWidgetArea, colourGridWidget_);
     setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
+    connect(ui->actionExit, &QAction::triggered, this, &MainWindow::fileExitMenu);
     connect(ui->actionRandom, &QAction::triggered, this, &MainWindow::makeRandomColours);
     connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::showAboutInformation);
 
@@ -72,6 +74,22 @@ void MainWindow::handleWheelColourChanged()
     }
 }
 
+void MainWindow::handleGridColourSelected(const QColor& colour)
+{
+    ColourWheelIndicators indicators = colourWheelDisplay_->displayIndicators();
+    indicators.setActiveIndicatorColour(colour);
+    colourWheelDisplay_->setDisplayIndicators(indicators);
+
+    baseColourWidget_->setSliderColours(colour);
+
+    colourGridWidget_->setColour(colour);
+}
+
+void MainWindow::fileExitMenu()
+{
+    QApplication::exit(0);
+}
+
 void MainWindow::makeRandomColours()
 {
     size_t colourCount = colourWheelDisplay_->displayIndicators().colours().size();
@@ -86,7 +104,7 @@ void MainWindow::makeRandomColours()
     for (size_t i = 0; i < colourCount; i++)
     {
         QColor defaultColour;
-        defaultColour.setHsl(rand() % 255, rand() % 255, 128);
+        defaultColour.setHsl(rand() % 359, rand() % 255, 128);
         defaultColours.push_back(defaultColour);
     }
 

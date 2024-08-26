@@ -23,8 +23,15 @@ ColourWheelIndicators ColourWheel::indicators() const
 
 QRect ColourWheel::wheelRect() const
 {
-    int wheelWidth = 300;
-    int wheelHeight = 300;
+    QRect wheel = rect();
+
+    int size = std::min(wheel.width(), wheel.height());
+
+    double scale = 0.9;
+
+    int wheelWidth = size * scale;
+    int wheelHeight = size * scale;
+
     return QRect(0, 0, wheelWidth, wheelHeight);
 }
 
@@ -73,7 +80,7 @@ QPoint ColourWheel::pointFromColour(const QColor& colour) const
     double x = (fx * 0.5 + 0.5) * wheel.width() + wheelBuffer;
     double y = (fy * 0.5 + 0.5) * wheel.height() + wheelBuffer;
 
-    QPoint drawPos = geometry().center();
+    QPoint drawPos = rect().center();
     drawPos.setX(drawPos.x() - wheelImage_.width() / 2);
     drawPos.setY(drawPos.y() - wheelImage_.height() / 2);
 
@@ -89,7 +96,7 @@ QColor ColourWheel::colourFromWidgetPoint(const QPoint& point) const
     int totalWidth = wheel.width() + wheelBuffer * 2;
     int totalHeight = wheel.height() + wheelBuffer * 2;
 
-    QPoint drawPos = geometry().center();
+    QPoint drawPos = rect().center();
     drawPos.setX(drawPos.x() - totalWidth / 2);
     drawPos.setY(drawPos.y() - totalHeight / 2);
 
@@ -144,7 +151,7 @@ void ColourWheel::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
 
-    QPoint drawPos = geometry().center();
+    QPoint drawPos = rect().center();
     drawPos.setX(drawPos.x() - wheelImage_.width() / 2);
     drawPos.setY(drawPos.y() - wheelImage_.height() / 2);
 
@@ -281,4 +288,11 @@ void ColourWheel::mouseMoveEvent(QMouseEvent *event)
 
         emit wheelColourChanged();
     }
+}
+
+void ColourWheel::resizeEvent(QResizeEvent*)
+{
+    wheelImage_ = drawWheelImage();
+
+    update();
 }

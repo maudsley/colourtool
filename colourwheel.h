@@ -45,6 +45,8 @@ private:
 
     void mouseMoveEvent(QMouseEvent *event) override;
 
+    void resizeEvent(QResizeEvent *event) override;
+
     QImage wheelImage_;
 
     ColourWheelIndicators indicators_;

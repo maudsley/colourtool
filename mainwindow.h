@@ -23,8 +23,11 @@ public:
 
     void handleWheelColourChanged();
 
+    void handleGridColourSelected(const QColor& colour);
+
 private:
 
+    void fileExitMenu();
     void makeRandomColours();
     void showAboutInformation();
 

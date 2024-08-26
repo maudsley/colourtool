@@ -7,6 +7,9 @@
 #include <QLabel>
 #include <QToolButton>
 #include <QAction>
+#include <QToolBar>
+#include <QApplication>
+#include <QClipboard>
 
 BaseColourWidget::BaseColourWidget(QWidget *parent)
     : QDockWidget{parent}
@@ -17,10 +20,16 @@ BaseColourWidget::BaseColourWidget(QWidget *parent)
 
     QFrame* centralWidget = new QFrame();
     //centralWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
+    centralWidget->setContentsMargins(0, 0, 0, 0);
     setWidget(centralWidget);
 
-    QVBoxLayout* widgetLayout = new QVBoxLayout(centralWidget);
-    //widgetLayout->setContentsMargins(0, 0, 0, 0);
+    QVBoxLayout* outerLayout = new QVBoxLayout(centralWidget);
+    outerLayout->setContentsMargins(0, 0, 0, 0);
+    outerLayout->setSpacing(0);
+
+    QVBoxLayout* widgetLayout = new QVBoxLayout();
+    outerLayout->addLayout(widgetLayout);
+    widgetLayout->setContentsMargins(8, 8, 8, 8);
     widgetLayout->setSpacing(5);
 
     colourRectangle_ = new ColourRectangleWidget();
@@ -57,6 +66,8 @@ BaseColourWidget::BaseColourWidget(QWidget *parent)
     lightnessSlider_ = new ColourSlider("L");
     connect(lightnessSlider_, &ColourSlider::indicatorMoved, this, &BaseColourWidget::handleLightnessSliderChanged);
     widgetLayout->addWidget(lightnessSlider_);
+
+    // Configure increment toolbar
 
     QHBoxLayout* adjustLayout = new QHBoxLayout();
     widgetLayout->addLayout(adjustLayout);
@@ -97,6 +108,16 @@ BaseColourWidget::BaseColourWidget(QWidget *parent)
     widgetLayout->addLayout(hexLayout);
 
     widgetLayout->addStretch();
+
+    // Configure clipboard toolbar
+
+    QToolBar* bottomBar = new QToolBar();
+    bottomBar->setIconSize(QSize(16, 16));
+    outerLayout->addWidget(bottomBar);
+    QAction* copyAction = bottomBar->addAction(QIcon(":/icons/copy.png"), "Copy");
+    connect(copyAction, &QAction::triggered, this, &BaseColourWidget::handleCopyColour);
+    QAction* pasteAction = bottomBar->addAction(QIcon(":/icons/paste.png"), "Paste");
+    connect(pasteAction, &QAction::triggered, this, &BaseColourWidget::handlePasteColour);
 
     setSliderColours(Qt::black);
 }
@@ -284,6 +305,24 @@ void BaseColourWidget::buttonLightnessDecrement()
 void BaseColourWidget::handleHexEditChanged()
 {
     QColor colour(hexEdit_->text());
+
+    setSliderColours(colour);
+
+    emit baseColourChanged();
+}
+
+void BaseColourWidget::handleCopyColour()
+{
+    QClipboard *clipboard = QApplication::clipboard();
+
+    clipboard->setText(baseColour().name());
+}
+
+void BaseColourWidget::handlePasteColour()
+{
+    QClipboard *clipboard = QApplication::clipboard();
+
+    QColor colour(clipboard->text());
 
     setSliderColours(colour);
 

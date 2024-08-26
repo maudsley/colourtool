@@ -36,6 +36,9 @@ private:
 
     void handleHexEditChanged();
 
+    void handleCopyColour();
+    void handlePasteColour();
+
     ColourRectangleWidget* colourRectangle_;
 
     ColourSlider* redSlider_;

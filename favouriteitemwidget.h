@@ -10,6 +10,16 @@ class FavouriteItemWidget : public QFrame
 public:
     explicit FavouriteItemWidget(const QColor& colour);
 
+    QColor colour();
+
+signals:
+
+    void onItemCollapse();
+    void onItemCollapsed();
+
+    void onItemExpand();
+    void onItemExpanded();
+
 private:
 
     QPixmap drawTile() const;
